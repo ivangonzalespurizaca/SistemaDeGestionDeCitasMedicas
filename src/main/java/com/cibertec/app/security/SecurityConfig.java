@@ -38,6 +38,8 @@ public class SecurityConfig {
             .requestMatchers("/api/logout").authenticated()
             .requestMatchers("/api/administrador/**").hasRole("ADMINISTRADOR")
             .requestMatchers("/api/recepcionista/**").hasRole("RECEPCIONISTA")
+            .requestMatchers("/api/cajero/**").hasRole("CAJERO")
+            .requestMatchers("/api/medico/**").hasRole("MEDICO")
             .anyRequest().authenticated()
         )
         .httpBasic(httpBasic -> {})
@@ -59,7 +61,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5174")); // 🔥 TU FRONT
+        config.setAllowedOrigins(List.of("http://localhost:5173")); // 🔥 TU FRONT
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -69,7 +71,7 @@ public class SecurityConfig {
         return source;
     }
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
     

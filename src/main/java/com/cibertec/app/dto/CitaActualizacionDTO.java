@@ -12,10 +12,6 @@ public class CitaActualizacionDTO {
     
     private Long idSlotNuevo; 
     
-    @NotNull(message = "Debe enviar el ID del slot actual.")
-    private Long idSlotActual; 
-    
     @Size(max = 255, message = "El motivo no puede exceder los 255 caracteres.")
     private String motivo;
-    
 }

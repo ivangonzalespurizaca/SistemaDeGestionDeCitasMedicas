@@ -20,6 +20,4 @@ public interface PacienteService {
 	
 	List<PacienteResponseDTO> buscarPorNombreDNI(String criterio);
 	
-	boolean existePaciente(String dni);
-	
 }

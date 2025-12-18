@@ -10,7 +10,7 @@ import lombok.Data;
 public class HorarioRegistroDTO {
 
     @NotNull(message = "Debe seleccionar un médico antes de registrar el horario.")
-    private Long idUsuario; 
+    private Long idMedico; 
     
     @NotNull(message = "El día de la semana es obligatorio.")
     private DiaSemana diaSemana; 

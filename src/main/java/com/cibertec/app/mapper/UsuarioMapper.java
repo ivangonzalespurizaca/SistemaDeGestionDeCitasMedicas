@@ -14,6 +14,7 @@ public interface UsuarioMapper {
 	@Mapping(target = "estado", ignore = true)
 	@Mapping(target = "idUsuario", ignore = true)
 	@Mapping(target = "imgPerfil", ignore = true)
+	@Mapping(target = "medico", ignore = true)
 	Usuario toEntityUsuario(UsuarioRegistroDTO dto);
 	
 	UsuarioResponseDTO toUsuarioResponseDTO(Usuario entity);
@@ -21,5 +22,6 @@ public interface UsuarioMapper {
 	@Mapping(target = "estado", ignore = true)
 	@Mapping(target = "imgPerfil", ignore = true)
 	@Mapping(target = "rol", ignore = true)
+	@Mapping(target = "medico", ignore = true)
 	void toUsuarioUpdate(UsuarioActualizacionDTO dto, @MappingTarget Usuario entity);
 }

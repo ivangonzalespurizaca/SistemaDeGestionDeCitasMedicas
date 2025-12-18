@@ -1,6 +1,7 @@
 package com.cibertec.app.service.impl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +28,6 @@ public class MedicoServiceImpl implements MedicoService {
 	private final UsuarioRepository usuarioRepository;
 	private final EspecialidadRepository especialidadRepository;
 	private final MedicoMapper medicoMapper;
-	
-	private Especialidad buscarEspecialidad(Long idEspecialidad) {
-		return especialidadRepository.findById(idEspecialidad)
-				.orElseThrow(() -> new RuntimeException("Especialidad no encontrada con ID: " + idEspecialidad));
-	}
-	
-	private Medico buscarMedico(Long id) {
-		return medicoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Perfil de Médico no encontrado con ID: " + id));
-	}
 
 	@Override
 	@Transactional(readOnly = true)
@@ -50,7 +41,7 @@ public class MedicoServiceImpl implements MedicoService {
 	@Transactional
 	public MedicoResponseDTO registrarMedico(MedicoRegistroDTO dto) {
 		Usuario usuarioBase = usuarioRepository.findById(dto.getIdUsuario())
-				.orElseThrow(() -> new RuntimeException("Usuario base no encontrado para el ID: " + dto.getIdUsuario()));
+				.orElseThrow(() -> new NoSuchElementException("Usuario base no encontrado para el ID: " + dto.getIdUsuario()));
 		
 		if (usuarioBase.getRol() != TipoRol.MEDICO) {
 			throw new IllegalArgumentException("El usuario debe tener el rol MEDICO para crear un perfil médico.");
@@ -109,12 +100,6 @@ public class MedicoServiceImpl implements MedicoService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public boolean existeMedico(String colegiatura) {
-		return medicoRepository.existsByNroColegiatura(colegiatura);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
 	public List<MedicoResponseDTO> buscarPorCriterio(String criterio) {
 		String criterioLimpio = (criterio != null && !criterio.trim().isEmpty()) ? criterio.trim() : null;
         
@@ -123,6 +108,16 @@ public class MedicoServiceImpl implements MedicoService {
         return medicos.stream()
                 .map(medicoMapper::toMedicoResponseDTO)
                 .toList();
+	}
+	
+	private Especialidad buscarEspecialidad(Long idEspecialidad) {
+		return especialidadRepository.findById(idEspecialidad)
+				.orElseThrow(() -> new NoSuchElementException("Especialidad no encontrada con ID: " + idEspecialidad));
+	}
+	
+	private Medico buscarMedico(Long id) {
+		return medicoRepository.findById(id)
+				.orElseThrow(() -> new NoSuchElementException("Perfil de Médico no encontrado con ID: " + id));
 	}
 
 }

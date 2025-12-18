@@ -19,6 +19,7 @@ import com.cibertec.app.dto.PacienteRegistroDTO;
 import com.cibertec.app.dto.PacienteResponseDTO;
 import com.cibertec.app.service.PacienteService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,62 +31,47 @@ public class PacienteController {
 	@GetMapping
     public ResponseEntity<List<PacienteResponseDTO>> listarTodos() {
         List<PacienteResponseDTO> listado = pacienteService.listarTodo();
-        
-        if (listado.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        
-        return ResponseEntity.ok(listado);
+        return listado.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listado);
     }
 	
 	@GetMapping("/buscar")
     public ResponseEntity<List<PacienteResponseDTO>> buscarPorCriterio(
             @RequestParam(required = false) String criterio) {
         
-        List<PacienteResponseDTO> pacientes = pacienteService.buscarPorNombreDNI(criterio);
-        
-        if (pacientes.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        
-        return ResponseEntity.ok(pacientes);
+        List<PacienteResponseDTO> pacientes = pacienteService.buscarPorNombreDNI(criterio); 
+        return pacientes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pacientes);
     }
 	
 	@GetMapping("/{id}")
     public ResponseEntity<PacienteResponseDTO> buscarPorId(@PathVariable Long id) {
-        try {
-            PacienteResponseDTO paciente = pacienteService.buscarPorId(id);
-            return ResponseEntity.ok(paciente);
-        } catch (RuntimeException e) {
-        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+		
+        PacienteResponseDTO paciente = pacienteService.buscarPorId(id);
+        return ResponseEntity.ok(paciente);
+            
     }
 	
 	@PostMapping
-    public ResponseEntity<PacienteResponseDTO> registrar(@RequestBody PacienteRegistroDTO dto) {
-        try {
-            PacienteResponseDTO pacienteRegistrado = pacienteService.registrarPaciente(dto);
-            return new ResponseEntity<>(pacienteRegistrado, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build(); 
-        }
+    public ResponseEntity<PacienteResponseDTO> registrar(@Valid @RequestBody PacienteRegistroDTO dto) {
+		
+       	PacienteResponseDTO pacienteRegistrado = pacienteService.registrarPaciente(dto);
+        return new ResponseEntity<>(pacienteRegistrado, HttpStatus.CREATED);
     }
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<PacienteResponseDTO> actualizar(
 			@PathVariable Long id,
-            @RequestBody PacienteActualizacionDTO dto){
+            @Valid @RequestBody PacienteActualizacionDTO dto){
+		
 		dto.setIdPaciente(id);
 		return ResponseEntity.ok(pacienteService.actualizarPaciente(dto));
+		
 	}
 	
 	@DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        try {
-            pacienteService.eliminarPorId(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+		
+        pacienteService.eliminarPorId(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        
     }
 }

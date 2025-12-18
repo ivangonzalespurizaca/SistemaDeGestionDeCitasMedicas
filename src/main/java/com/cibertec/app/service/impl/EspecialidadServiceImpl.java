@@ -1,8 +1,10 @@
 package com.cibertec.app.service.impl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cibertec.app.dto.EspecialidadActualizacionDTO;
 import com.cibertec.app.dto.EspecialidadRegistroDTO;
@@ -21,6 +23,7 @@ public class EspecialidadServiceImpl implements EspecialidadService{
 	private final EspecialidadRepository especialidadRepository;
 	private final EspecialidadMapper especialidadMapper;
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<EspecialidadResponseDTO> listarTodo() {
 		return especialidadRepository.findAll()
@@ -29,6 +32,7 @@ public class EspecialidadServiceImpl implements EspecialidadService{
 				.toList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<EspecialidadResponseDTO> buscarPorNombre(String nombre) {
 		
@@ -45,22 +49,18 @@ public class EspecialidadServiceImpl implements EspecialidadService{
 	            .toList();
 	}
 
-	@Override
-	public boolean existeEspecialidad(String nombre) {
-		return especialidadRepository.existsByNombreEspecialidad(nombre);
-	}
-
+	@Transactional
 	@Override
 	public void eliminarPorId(Long id) {
 
         if (!especialidadRepository.existsById(id)) {
-            throw new RuntimeException("Especialidad no encontrada");
+            throw new NoSuchElementException("Especialidad no encontrada");
         }
-
         especialidadRepository.deleteById(id);
 		
 	}
 
+	@Transactional
 	@Override
 	public EspecialidadResponseDTO registrarEspecialidad(EspecialidadRegistroDTO dto) {
         if (especialidadRepository.existsByNombreEspecialidad(dto.getNombreEspecialidad())) {
@@ -73,22 +73,29 @@ public class EspecialidadServiceImpl implements EspecialidadService{
         return especialidadMapper.toEspecialidadResponseDTO(guardada);
 	}
 
+	@Transactional
 	@Override
 	public EspecialidadResponseDTO actualizarEspecialidad(EspecialidadActualizacionDTO dto) {
         Especialidad entity = especialidadRepository.findById(dto.getIdEspecialidad())
-                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+                .orElseThrow(() -> new NoSuchElementException("Especialidad no encontrada"));
 
+        if (dto.getNombreEspecialidad() != null && !dto.getNombreEspecialidad().equalsIgnoreCase(entity.getNombreEspecialidad())) {
+            if (especialidadRepository.existsByNombreEspecialidad(dto.getNombreEspecialidad())) {
+                throw new IllegalArgumentException("Ya existe otra especialidad con el nombre: " + dto.getNombreEspecialidad());
+            }
+        }
+        
         especialidadMapper.toEspecialidadUpdate(dto, entity);
-
         Especialidad actualizada = especialidadRepository.save(entity);
 
         return especialidadMapper.toEspecialidadResponseDTO(actualizada);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public EspecialidadResponseDTO buscarPorId(Long id) {
         Especialidad entity = especialidadRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+                .orElseThrow(() -> new NoSuchElementException("Especialidad no encontrada"));
         return especialidadMapper.toEspecialidadResponseDTO(entity);
 	}
 

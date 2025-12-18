@@ -18,4 +18,6 @@ public interface UsuarioService {
 	
 	List<UsuarioResponseDTO> buscarUsuarioParaMedicosDisponibles(String dni);
 	
+	void cambiarEstado(Long id);
+	
 }

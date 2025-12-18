@@ -16,7 +16,5 @@ public interface MedicoService {
 	
 	MedicoResponseDTO buscarPorId(Long id);
 	
-	boolean existeMedico(String colegiatura);
-	
 	List<MedicoResponseDTO> buscarPorCriterio(String criterio);
 }

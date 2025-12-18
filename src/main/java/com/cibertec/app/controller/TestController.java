@@ -2,7 +2,6 @@ package com.cibertec.app.controller;
 
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.cibertec.app.dto.EspecialidadResponseDTO;
 import com.cibertec.app.dto.LoginRequest;
 import com.cibertec.app.service.EspecialidadService;
 
@@ -31,12 +28,6 @@ public class TestController {
 	public final EspecialidadService especialidadService;
 	@Autowired
     private AuthenticationManager authenticationManager;
-	
-	@GetMapping("/especialidades")
-	ResponseEntity<List<EspecialidadResponseDTO>> listarEspecialidades(){
-		List<EspecialidadResponseDTO> listado = especialidadService.listarTodo();
-		return ResponseEntity.ok(listado);
-	}
 	
 
 	    @GetMapping("/login")

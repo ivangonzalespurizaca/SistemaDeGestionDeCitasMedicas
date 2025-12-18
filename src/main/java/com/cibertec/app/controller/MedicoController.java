@@ -30,21 +30,13 @@ public class MedicoController {
 	@GetMapping 
     public ResponseEntity<List<MedicoResponseDTO>> listarTodo() {
         List<MedicoResponseDTO> listado = medicoService.listarTodo();
-        
-        if (listado.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(listado);
+        return listado.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listado);
     }
 	
 	@PostMapping
     public ResponseEntity<MedicoResponseDTO> registrarMedico(@Valid @RequestBody MedicoRegistroDTO dto) {
-        try {
-    		MedicoResponseDTO nuevoMedico = medicoService.registrarMedico(dto);
-            return new ResponseEntity<>(nuevoMedico, HttpStatus.CREATED);
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build(); 
-		}
+		MedicoResponseDTO nuevoMedico = medicoService.registrarMedico(dto);
+        return new ResponseEntity<>(nuevoMedico, HttpStatus.CREATED);
     }
 	
 	@PutMapping("/{id}")
@@ -52,35 +44,19 @@ public class MedicoController {
             @PathVariable Long id, 
             @Valid @RequestBody MedicoActualizarDTO dto) {
         dto.setIdMedico(id);
-        
-        try {
-            return ResponseEntity.ok(medicoService.actualizarMedico(dto));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); 
-        }
+        return ResponseEntity.ok(medicoService.actualizarMedico(dto));
     }
 	
 	@GetMapping("/{id}")
     public ResponseEntity<MedicoResponseDTO> buscarPorId(@PathVariable Long id) {
-        try {
-            MedicoResponseDTO response = medicoService.buscarPorId(id);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); 
-        }
+        MedicoResponseDTO response = medicoService.buscarPorId(id);
+        return ResponseEntity.ok(response);
     }
 	
 	@GetMapping("/buscar") 
     public ResponseEntity<List<MedicoResponseDTO>> buscarPorCriterio(
             @RequestParam(required = false) String criterio) {
-        
         List<MedicoResponseDTO> listado = medicoService.buscarPorCriterio(criterio);
-        
-        if (listado.isEmpty()) {
-            return ResponseEntity.noContent().build(); 
-        }
-        return ResponseEntity.ok(listado); 
+        return listado.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listado);
 	}
 }

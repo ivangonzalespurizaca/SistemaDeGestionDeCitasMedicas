@@ -15,9 +15,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Entity
 @Table(name = "Log_Cita")
 @Data
@@ -35,7 +37,7 @@ public class LogCita {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_Usuario")
-    private Usuario usuarioActor; // Puede ser null
+    private Usuario usuarioActor; 
     
     @Enumerated(EnumType.STRING)
     private Accion accion;

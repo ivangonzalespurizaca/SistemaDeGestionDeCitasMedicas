@@ -3,7 +3,7 @@ package com.cibertec.app.dto;
 import lombok.Value;
 
 @Value
-public class HorarioListadoDTO {
+public class HorarioResponseDTO {
 	
 	private Long idHorario;
     private String diaSemana; 

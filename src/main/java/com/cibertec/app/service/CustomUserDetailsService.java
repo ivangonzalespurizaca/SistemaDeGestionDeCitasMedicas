@@ -22,12 +22,16 @@ public class CustomUserDetailsService implements UserDetailsService{
 
         Usuario usuario = usuarioRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
 
-        String role = usuario.getRol().name();
+        boolean estaHabilitado = (usuario.getEstado() == com.cibertec.app.enums.EstadoUsuario.ACTIVO);
 
         UserDetails userDetails = User.builder()
                 .username(usuario.getUsername())
                 .password(usuario.getContrasenia())
-                .roles(role)
+                .roles(usuario.getRol().name())
+                .disabled(!estaHabilitado)
+                .accountExpired(false)
+                .credentialsExpired(false)
+                .accountLocked(false)
                 .build();
 
         return userDetails;

@@ -12,8 +12,6 @@ public interface EspecialidadService {
 	
 	List<EspecialidadResponseDTO> buscarPorNombre(String nombre);
 	
-	boolean existeEspecialidad(String nombre);
-	
 	public void eliminarPorId(Long id);
 	
 	EspecialidadResponseDTO registrarEspecialidad(EspecialidadRegistroDTO dto);

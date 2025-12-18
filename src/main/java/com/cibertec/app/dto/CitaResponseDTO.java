@@ -8,7 +8,7 @@ import com.cibertec.app.enums.EstadoCita;
 import lombok.Value;
 
 @Value
-public class CitaListadoDTO {
+public class CitaResponseDTO {
 
 	private Long idCita; 
     private LocalDate fecha;
@@ -16,6 +16,7 @@ public class CitaListadoDTO {
     private EstadoCita estado; 
     private String nombreCompletoMedico;
     private String especialidadNombre;
+    private String dniPaciente;
     private String nombreCompletoPaciente;
     
 }

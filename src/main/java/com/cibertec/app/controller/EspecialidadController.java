@@ -19,6 +19,7 @@ import com.cibertec.app.dto.EspecialidadRegistroDTO;
 import com.cibertec.app.dto.EspecialidadResponseDTO;
 import com.cibertec.app.service.EspecialidadService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/api/administrador/especialidades")
@@ -30,70 +31,39 @@ public class EspecialidadController {
 	@GetMapping
 	ResponseEntity<List<EspecialidadResponseDTO>> listarEspecialidades(){
 		List<EspecialidadResponseDTO> listado = especialidadService.listarTodo();
-		
-        if (listado.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-		
-		return ResponseEntity.ok(listado);
+		return listado.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listado);
 	}
 	
     @GetMapping("/buscar")
     public ResponseEntity<List<EspecialidadResponseDTO>> buscarPorNombre(
             @RequestParam(required = false) String nombre) {
-    	
-    	List<EspecialidadResponseDTO> listado = especialidadService.buscarPorNombre(nombre);
-    	
-        if (listado.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-    	
-        return ResponseEntity.ok(listado);
+    	List<EspecialidadResponseDTO> listado = especialidadService.buscarPorNombre(nombre);    	
+    	return listado.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listado);
     }
 	
     @GetMapping("/{id}")
     public ResponseEntity<EspecialidadResponseDTO> buscarPorId(@PathVariable Long id) {
-    	try {
-    		EspecialidadResponseDTO especialidad = especialidadService.buscarPorId(id);
-    		return ResponseEntity.ok(especialidad);
-    	} catch(RuntimeException e) {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	}
+    	EspecialidadResponseDTO especialidad = especialidadService.buscarPorId(id);
+    	return ResponseEntity.ok(especialidad);
     }
     
     @PostMapping
-    public ResponseEntity<EspecialidadResponseDTO> registrar(
-            @RequestBody EspecialidadRegistroDTO dto) {
-    	try {
-    		EspecialidadResponseDTO response = especialidadService.registrarEspecialidad(dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-		}
+    public ResponseEntity<EspecialidadResponseDTO> registrar(@Valid @RequestBody EspecialidadRegistroDTO dto) {
+		EspecialidadResponseDTO response = especialidadService.registrarEspecialidad(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 	
     @PutMapping("/{id}")
     public ResponseEntity<EspecialidadResponseDTO> actualizar(
             @PathVariable Long id,
-            @RequestBody EspecialidadActualizacionDTO dto) {
-
+            @Valid @RequestBody EspecialidadActualizacionDTO dto) {
         dto.setIdEspecialidad(id);
-        
-        try {
-        	return ResponseEntity.ok(especialidadService.actualizarEspecialidad(dto));
-		} catch (RuntimeException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}  
+        return ResponseEntity.ok(especialidadService.actualizarEspecialidad(dto));
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-    	try {
-            especialidadService.eliminarPorId(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    	}catch(RuntimeException e) {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	}
+        especialidadService.eliminarPorId(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    
 }

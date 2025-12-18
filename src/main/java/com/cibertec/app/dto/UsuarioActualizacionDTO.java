@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -13,7 +12,7 @@ public class UsuarioActualizacionDTO {
     @NotNull(message = "El ID es obligatorio para la actualización.")
     private Long idUsuario; 
     
-    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres si se ingresa.")
+    @Pattern(regexp = "^$|^.{4,}$", message = "La contraseña debe tener al menos 4 caracteres si decide cambiarla.")
     private String contrasenia; 
     
     @NotBlank(message = "El nombre de usuario es obligatorio.")
