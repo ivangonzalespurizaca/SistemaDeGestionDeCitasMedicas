@@ -1,6 +1,8 @@
 package com.cibertec.app.controller;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cibertec.app.dto.UsuarioActualizacionDTO;
 import com.cibertec.app.dto.UsuarioRegistroDTO;
 import com.cibertec.app.dto.UsuarioResponseDTO;
+import com.cibertec.app.dto.UsuarioVistaModificarDTO;
+import com.cibertec.app.enums.TipoRol;
 import com.cibertec.app.service.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -50,8 +54,8 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/username/{username}")
-	public ResponseEntity<UsuarioResponseDTO> buscarPorUserName(@PathVariable String username) {
-		UsuarioResponseDTO response = usuarioService.buscarPorUserName(username);
+	public ResponseEntity<UsuarioVistaModificarDTO> buscarPorUserName(@PathVariable String username) {
+		UsuarioVistaModificarDTO response = usuarioService.buscarPorUserName(username);
 		return ResponseEntity.ok(response);
 	}
 	
@@ -67,4 +71,16 @@ public class UsuarioController {
         usuarioService.cambiarEstado(id);
         return ResponseEntity.noContent().build();
     }
+	
+	@GetMapping("/roles")
+	public ResponseEntity<List<Map<String, String>>> listarRoles() {
+	    List<Map<String, String>> roles = Arrays.stream(TipoRol.values())
+	            .filter(rol -> !rol.name().equalsIgnoreCase("ADMINISTRADOR") && 
+	                           !rol.name().equalsIgnoreCase("ROLE_ADMINISTRADOR"))
+	            .map(m -> Map.of(
+	                "value", m.name(), 
+	                "label", m.name().replace("_", " ") 
+	            )).toList();
+	    return ResponseEntity.ok(roles);
+	}
 }

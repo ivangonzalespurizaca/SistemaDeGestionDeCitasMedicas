@@ -7,6 +7,7 @@ import org.mapstruct.MappingTarget;
 import com.cibertec.app.dto.UsuarioActualizacionDTO;
 import com.cibertec.app.dto.UsuarioRegistroDTO;
 import com.cibertec.app.dto.UsuarioResponseDTO;
+import com.cibertec.app.dto.UsuarioVistaModificarDTO;
 import com.cibertec.app.entity.Usuario;
 
 @Mapper(componentModel = "spring")
@@ -24,4 +25,6 @@ public interface UsuarioMapper {
 	@Mapping(target = "rol", ignore = true)
 	@Mapping(target = "medico", ignore = true)
 	void toUsuarioUpdate(UsuarioActualizacionDTO dto, @MappingTarget Usuario entity);
+	
+	UsuarioVistaModificarDTO toVistaModificarDTO(Usuario entity);
 }

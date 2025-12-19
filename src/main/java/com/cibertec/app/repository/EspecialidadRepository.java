@@ -10,6 +10,8 @@ public interface EspecialidadRepository  extends JpaRepository<Especialidad, Lon
 	
 	List<Especialidad> findByNombreEspecialidadStartingWithIgnoreCase(String nombre);
 	
+	List<Especialidad> findAllByOrderByIdEspecialidadAsc();
+	
 	boolean existsByNombreEspecialidad(String nombre);
 	
 }

@@ -16,6 +16,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -30,7 +32,7 @@ public class SecurityConfig {
 
     	http
         .csrf(csrf -> csrf.disable())
-        .cors(cors -> {}) // 🔥 ACTIVA CORS
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/api/test/login").permitAll()
@@ -42,7 +44,14 @@ public class SecurityConfig {
             .requestMatchers("/api/medico/**").hasRole("MEDICO")
             .anyRequest().authenticated()
         )
-        .httpBasic(httpBasic -> {})
+        .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint((request, response, authException) -> {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+        }))
+        .exceptionHandling(exception -> exception
+            .authenticationEntryPoint((request, response, authException) -> {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No autorizado");
+            })
+        )
         .logout(logout -> logout
             .logoutUrl("/api/logout")
             .invalidateHttpSession(true)

@@ -26,7 +26,7 @@ public class EspecialidadServiceImpl implements EspecialidadService{
 	@Transactional(readOnly = true)
 	@Override
 	public List<EspecialidadResponseDTO> listarTodo() {
-		return especialidadRepository.findAll()
+		return especialidadRepository.findAllByOrderByIdEspecialidadAsc()
 				.stream()
 				.map(especialidadMapper::toEspecialidadResponseDTO)
 				.toList();
@@ -42,7 +42,7 @@ public class EspecialidadServiceImpl implements EspecialidadService{
 	        especialidadesEncontradas = especialidadRepository.findByNombreEspecialidadStartingWithIgnoreCase(nombre);
 	    } 
 	    else {
-	        especialidadesEncontradas = especialidadRepository.findAll();
+	        especialidadesEncontradas = especialidadRepository.findAllByOrderByIdEspecialidadAsc();
 	    }
 	    return especialidadesEncontradas.stream()
 	            .map(especialidadMapper::toEspecialidadResponseDTO)

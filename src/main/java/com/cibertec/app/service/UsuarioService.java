@@ -5,6 +5,7 @@ import java.util.List;
 import com.cibertec.app.dto.UsuarioActualizacionDTO;
 import com.cibertec.app.dto.UsuarioRegistroDTO;
 import com.cibertec.app.dto.UsuarioResponseDTO;
+import com.cibertec.app.dto.UsuarioVistaModificarDTO;
 
 public interface UsuarioService {
 	
@@ -12,7 +13,7 @@ public interface UsuarioService {
 	
 	UsuarioResponseDTO actualizarUsuario(UsuarioActualizacionDTO dto);
 	
-	UsuarioResponseDTO buscarPorUserName(String userName);
+	UsuarioVistaModificarDTO buscarPorUserName(String userName);
 	
 	UsuarioResponseDTO buscarPorId(Long id);
 	

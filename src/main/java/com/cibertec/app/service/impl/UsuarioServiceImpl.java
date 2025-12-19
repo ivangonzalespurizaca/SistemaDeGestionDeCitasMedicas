@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cibertec.app.dto.UsuarioActualizacionDTO;
 import com.cibertec.app.dto.UsuarioRegistroDTO;
 import com.cibertec.app.dto.UsuarioResponseDTO;
+import com.cibertec.app.dto.UsuarioVistaModificarDTO;
 import com.cibertec.app.entity.Usuario;
 import com.cibertec.app.enums.EstadoUsuario;
 import com.cibertec.app.enums.TipoRol;
@@ -83,11 +84,11 @@ public class UsuarioServiceImpl implements UsuarioService{
 	
 	@Transactional(readOnly = true)
 	@Override
-	public UsuarioResponseDTO buscarPorUserName(String userName) {
+	public UsuarioVistaModificarDTO buscarPorUserName(String userName) {
 		Usuario entity = usuarioRepository.findByUsername(userName) 
                 .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
         
-        return usuarioMapper.toUsuarioResponseDTO(entity);
+        return usuarioMapper.toVistaModificarDTO(entity);
 	}
 	
 	@Transactional(readOnly = true)
