@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cibertec.app.dto.MedicoActualizarDTO;
 import com.cibertec.app.dto.MedicoRegistroDTO;
 import com.cibertec.app.dto.MedicoResponseDTO;
+import com.cibertec.app.dto.MedicoVistaModificarDTO;
 import com.cibertec.app.service.MedicoService;
 
 import jakarta.validation.Valid;
@@ -59,4 +60,10 @@ public class MedicoController {
         List<MedicoResponseDTO> listado = medicoService.buscarPorCriterio(criterio);
         return listado.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listado);
 	}
+	
+	@GetMapping("/vistaEditar/{id}")
+    public ResponseEntity<MedicoVistaModificarDTO> obtenerParaEditar(@PathVariable Long id) {
+        MedicoVistaModificarDTO dto = medicoService.obtenerParaEditar(id);
+        return ResponseEntity.ok(dto);
+    }
 }

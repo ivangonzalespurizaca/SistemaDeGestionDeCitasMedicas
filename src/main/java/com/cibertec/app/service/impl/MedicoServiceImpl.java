@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cibertec.app.dto.MedicoActualizarDTO;
 import com.cibertec.app.dto.MedicoRegistroDTO;
 import com.cibertec.app.dto.MedicoResponseDTO;
+import com.cibertec.app.dto.MedicoVistaModificarDTO;
 import com.cibertec.app.entity.Especialidad;
 import com.cibertec.app.entity.Medico;
 import com.cibertec.app.entity.Usuario;
@@ -120,4 +121,20 @@ public class MedicoServiceImpl implements MedicoService {
 				.orElseThrow(() -> new NoSuchElementException("Perfil de Médico no encontrado con ID: " + id));
 	}
 
+	@Override
+	public MedicoVistaModificarDTO obtenerParaEditar(Long id) {
+		Medico medico = medicoRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Médico no encontrado con ID: " + id));
+	    MedicoVistaModificarDTO dto = medicoMapper.toVistaModificarDTO(medico);
+	    return dto;
+	}
+
+	@Override
+    @Transactional(readOnly = true)
+    public Long obtenerIdMedicoPorUsername(String username) {
+        // El repositorio devuelve Optional<Long>
+        // .orElseThrow() lo convierte a Long o lanza error si no existe
+        return medicoRepository.findIdMedicoByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Médico no encontrado para el usuario: " + username));
+    }
 }

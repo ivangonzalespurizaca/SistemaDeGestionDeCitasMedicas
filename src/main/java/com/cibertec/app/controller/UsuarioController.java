@@ -5,16 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cibertec.app.dto.UsuarioActualizacionDTO;
 import com.cibertec.app.dto.UsuarioRegistroDTO;
@@ -32,19 +34,21 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioController {
 	public final UsuarioService usuarioService;
 	
-	@PostMapping
+	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	public ResponseEntity<UsuarioResponseDTO> registrarUsuario(
-			@Valid @RequestBody UsuarioRegistroDTO dto) {
-		UsuarioResponseDTO response = usuarioService.registrarUsuario(dto);
+			@Valid @ModelAttribute UsuarioRegistroDTO dto,
+			@RequestParam(required = false) MultipartFile archivo){
+		UsuarioResponseDTO response = usuarioService.registrarUsuario(dto, archivo);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 	
-	@PutMapping("/{id}")
+	@PutMapping(value = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(
             @PathVariable Long id, 
-            @Valid @RequestBody UsuarioActualizacionDTO dto) {
+            @Valid @ModelAttribute UsuarioActualizacionDTO dto,
+            @RequestParam(required = false) MultipartFile archivo) {
         dto.setIdUsuario(id); 
-		return ResponseEntity.ok(usuarioService.actualizarUsuario(dto));
+		return ResponseEntity.ok(usuarioService.actualizarUsuario(dto, archivo));
 	}
 	
 	@GetMapping("/{id}")

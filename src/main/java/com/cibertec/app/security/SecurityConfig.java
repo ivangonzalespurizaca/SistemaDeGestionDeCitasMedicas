@@ -38,7 +38,10 @@ public class SecurityConfig {
             .requestMatchers("/api/test/login").permitAll()
             .requestMatchers("/api/test/me").authenticated()
             .requestMatchers("/api/logout").authenticated()
+            .requestMatchers("/api/administrador/medicos/buscar").hasAnyRole("ADMINISTRADOR", "RECEPCIONISTA")
+            .requestMatchers("/api/administrador/horarios/**").hasAnyRole("ADMINISTRADOR", "RECEPCIONISTA")
             .requestMatchers("/api/administrador/**").hasRole("ADMINISTRADOR")
+            .requestMatchers("/api/recepcionista/citas/**").hasAnyRole("RECEPCIONISTA", "MEDICO", "CAJERO")
             .requestMatchers("/api/recepcionista/**").hasRole("RECEPCIONISTA")
             .requestMatchers("/api/cajero/**").hasRole("CAJERO")
             .requestMatchers("/api/medico/**").hasRole("MEDICO")
@@ -71,7 +74,7 @@ public class SecurityConfig {
 
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173")); // 🔥 TU FRONT
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

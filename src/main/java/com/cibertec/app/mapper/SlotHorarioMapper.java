@@ -31,7 +31,8 @@ public class SlotHorarioMapper {
             Cita cita = entity.getCita();
             
             builder.idCita(cita.getIdCita())
-                   .motivo(cita.getMotivo());
+                   .motivo(cita.getMotivo())
+                   .estadoCita(cita.getEstado().name());
 
             if (cita.getPaciente() != null) {
                 String nombreCompleto = cita.getPaciente().getNombres() + " " + 

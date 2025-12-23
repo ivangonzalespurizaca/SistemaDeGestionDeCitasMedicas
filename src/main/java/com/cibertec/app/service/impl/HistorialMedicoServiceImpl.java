@@ -59,7 +59,7 @@ public class HistorialMedicoServiceImpl implements HistorialMedicoService{
 	@Transactional(readOnly = true)
 	@Override
 	public List<HistorialMedicoResponseDTO> listarTodos() {
-		return historialRepository.findAll().stream()
+		return historialRepository.findAllByOrderByCita_FechaDescCita_HoraDesc().stream()
                 .map(historialMapper::toResponseHistorialDTO)
                 .toList();
 	}

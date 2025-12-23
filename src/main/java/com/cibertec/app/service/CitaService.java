@@ -24,6 +24,8 @@ public interface CitaService {
 	
 	List<CitaResponseDTO> listarPendientesPorPaciente(String paciente);
 	
+	List<CitaResponseDTO> listarConfirmadasPorPaciente(String paciente);
+	
 	void anularCita(Long id, String username);
 	
 	void completarCita(Long id, String username);

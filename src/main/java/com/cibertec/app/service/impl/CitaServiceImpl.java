@@ -44,7 +44,7 @@ public class CitaServiceImpl implements CitaService{
     @Transactional(readOnly = true)
 	@Override
 	public List<CitaResponseDTO> listarTodo() {
-		return citaRepository.findAll().stream()
+		return citaRepository.findAllByOrderByFechaDescHoraDesc().stream()
                 .map(citaOutputMapper::toResponseDTO)
                 .toList();
 	}
@@ -103,39 +103,46 @@ public class CitaServiceImpl implements CitaService{
 	    Usuario usuarioActor = usuarioRepository.findByUsername(username)
 	            .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado: " + username));
 
+	    // CASO A: Se seleccionó un nuevo horario (Reprogramación)
 	    if (dto.getIdSlotNuevo() != null) {
 	        SlotHorario slotNuevo = slotRepository.findById(dto.getIdSlotNuevo())
 	                .orElseThrow(() -> new EntityNotFoundException("El nuevo horario no existe."));
-
-	        LocalDateTime fechaHoraNueva = LocalDateTime.of(slotNuevo.getFecha(), slotNuevo.getHora());
-	        if (fechaHoraNueva.isBefore(LocalDateTime.now())) {
-	            throw new IllegalArgumentException("No se puede reprogramar a un horario pasado.");
-	        }
 
 	        if (slotNuevo.getEstadoSlot() != EstadoSlotHorario.DISPONIBLE) {
 	            throw new IllegalStateException("El nuevo horario seleccionado ya está ocupado.");
 	        }
 
 	        SlotHorario slotActual = slotRepository.findByCita(cita)
-	                .orElseThrow(() -> new IllegalStateException("No se encontró el slot actual."));
+	                .orElseThrow(() -> new IllegalStateException("No se encontró el slot actual vinculado a la cita."));
 
 	        if (!slotActual.getIdSlot().equals(slotNuevo.getIdSlot())) {
+	            // 1. Liberar slot viejo (Crucial para el error Duplicate Entry)
 	            slotActual.setEstadoSlot(EstadoSlotHorario.DISPONIBLE);
 	            slotActual.setCita(null);
-	            slotRepository.saveAndFlush(slotActual);
+	            slotRepository.saveAndFlush(slotActual); 
 
+	            // 2. Ocupar slot nuevo
 	            slotNuevo.setEstadoSlot(EstadoSlotHorario.RESERVADO);
 	            slotNuevo.setCita(cita);
-	            ;
-	            
+	            slotRepository.saveAndFlush(slotNuevo);
+
+	            // 3. Actualizar la entidad Cita (Mapper) y Logs
 	            citaInputMapper.updateEntityCita(dto, cita, slotNuevo);
-	            logService.registrarLog(cita, Accion.REASIGNACION, "Cita modificada.", usuarioActor);
+	            logService.registrarLog(cita, Accion.REASIGNACION, 
+	                "Cita reprogramada del " + slotActual.getFecha() + " al " + slotNuevo.getFecha(), usuarioActor);
+	        } else {
+	            // El ID del slot es el mismo, pero quizá cambió el motivo
+	            citaInputMapper.updateEntityCita(dto, cita, null);
 	        }
-	    } else {
+	    } 
+	    // CASO B: Solo se actualizan datos informativos (Motivo)
+	    else {
 	        citaInputMapper.updateEntityCita(dto, cita, null);
-	        logService.registrarLog(cita, Accion.REASIGNACION, "Se actualizaron datos informativos.", usuarioActor);
+	        logService.registrarLog(cita, Accion.REASIGNACION, "Se actualizaron datos informativos (Motivo).", usuarioActor);
 	    }
-	    return citaOutputMapper.toResponseDTO(cita);
+
+	    Cita citaGuardada = citaRepository.save(cita);
+	    return citaOutputMapper.toResponseDTO(citaGuardada);
 	}
 	
 	@Transactional(readOnly = true)
@@ -158,6 +165,14 @@ public class CitaServiceImpl implements CitaService{
 	@Override
 	public List<CitaResponseDTO> listarPendientesPorPaciente(String paciente) {
 		return citaRepository.findPendientesByPaciente(paciente, EstadoCita.PENDIENTE).stream()
+                .map(citaOutputMapper::toResponseDTO)
+                .toList();
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public List<CitaResponseDTO> listarConfirmadasPorPaciente(String paciente) {
+		return citaRepository.findPendientesByPaciente(paciente, EstadoCita.CONFIRMADO).stream()
                 .map(citaOutputMapper::toResponseDTO)
                 .toList();
 	}

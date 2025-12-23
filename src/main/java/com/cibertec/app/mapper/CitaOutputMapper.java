@@ -24,7 +24,9 @@ public interface CitaOutputMapper {
     @Mapping(target = "especialidadNombre", source = "medico.especialidad.nombreEspecialidad")
     @Mapping(target = "registradorNombreCompleto", source = "usuarioRegistro")
     @Mapping(target = "idUsuarioRegistrador", source = "usuarioRegistro.idUsuario")
+    @Mapping(target = "medicoDni", source = "medico.usuario.dni")
     @Mapping(target = "pacienteDni", source = "paciente.dni")
+    @Mapping(target = "idMedico", source = "medico.idMedico")
     CitaDetalleDTO toDetalleDTO(Cita cita);
 
     default String mapNombreMedico(Medico medico) {

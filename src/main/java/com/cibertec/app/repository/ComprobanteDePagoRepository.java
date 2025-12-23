@@ -16,7 +16,9 @@ public interface ComprobanteDePagoRepository extends JpaRepository<ComprobanteDe
 	           "WHERE (:criterio IS NULL OR :criterio = '' " +
 	           "OR c.pagador.dniPagador LIKE CONCAT('%', :criterio, '%')" +
 	           "OR LOWER(c.pagador.nombresPagador) LIKE LOWER(CONCAT('%', :criterio, '%')) " +
-	           "OR LOWER(c.pagador.apellidosPagador) LIKE LOWER(CONCAT('%', :criterio, '%')))")
+	           "OR LOWER(c.pagador.apellidosPagador) LIKE LOWER(CONCAT('%', :criterio, '%')))"+
+				"ORDER BY c.fechaEmision DESC")
 	    List<ComprobanteDePago> buscarPorCriterio(@Param("criterio") String criterio);
 	
+	List<ComprobanteDePago> findAllByOrderByFechaEmisionDesc();
 }

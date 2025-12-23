@@ -1,8 +1,10 @@
 package com.cibertec.app.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.cibertec.app.dto.UsuarioActualizacionDTO;
 import com.cibertec.app.dto.UsuarioRegistroDTO;
@@ -21,10 +23,13 @@ public interface UsuarioMapper {
 	UsuarioResponseDTO toUsuarioResponseDTO(Usuario entity);
 	
 	@Mapping(target = "estado", ignore = true)
-	@Mapping(target = "imgPerfil", ignore = true)
 	@Mapping(target = "rol", ignore = true)
 	@Mapping(target = "medico", ignore = true)
+	@Mapping(target = "imgPerfil", ignore = true)
+	@Mapping(target = "contrasenia", ignore = true)
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	void toUsuarioUpdate(UsuarioActualizacionDTO dto, @MappingTarget Usuario entity);
 	
+	@Mapping(source = "estado", target = "estado")
 	UsuarioVistaModificarDTO toVistaModificarDTO(Usuario entity);
 }

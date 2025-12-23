@@ -13,11 +13,22 @@ import com.cibertec.app.enums.EstadoCita;
 
 public interface CitaRepository extends JpaRepository<Cita, Long>{
 	
-//	List<Cita> findByPaciente_DniStartingWith(String dni);
-//	
-//	List<Cita> findByPaciente_NombresStartingWith(String nombre);
+    @Query("SELECT COUNT(c) > 0 FROM Cita c WHERE " +
+	           "c.medico.idMedico = :idMedico AND " +
+	           "c.hora = :hora AND " +
+	           "c.fecha >= :fechaActual AND " +
+	           "c.estado IN :estados AND " +
+	           "FUNCTION('DAYOFWEEK', c.fecha) = :indiceDia")
+	    boolean existeCitaEnDiaYHora(
+	        @Param("idMedico") Long idMedico, 
+	        @Param("hora") LocalTime hora, 
+	        @Param("fechaActual") LocalDate fechaActual, 
+	        @Param("estados") List<EstadoCita> estados, 
+	        @Param("indiceDia") int indiceDia // MySQL: 1=Dom, 2=Lun, ... 7=Sáb
+	    );
 	
-	
+    List<Cita> findAllByOrderByFechaDescHoraDesc();
+    
 	@Query("SELECT c FROM Cita c " +
 	           "JOIN FETCH c.paciente p " +
 	           "JOIN FETCH c.medico m " +
@@ -29,12 +40,6 @@ public interface CitaRepository extends JpaRepository<Cita, Long>{
 	           "OR LOWER(p.apellidos) LIKE LOWER(CONCAT('%', :filtro, '%')) " +
 	           "ORDER BY c.fecha DESC, c.hora DESC")
 	    List<Cita> buscarPorCriterioGlobal(@Param("filtro") String filtro);
-	
-	
-	
-	List<Cita> findByMedico_IdMedicoAndFechaAndHora(Long id, LocalDate fecha, LocalTime hora);
-	
-	List<Cita> findByMedico_IdMedicoAndFecha(Long id, LocalDate fecha);
 	
 	List<Cita> findByEstado(EstadoCita estado);
 	

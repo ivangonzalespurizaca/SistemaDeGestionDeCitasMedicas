@@ -59,6 +59,12 @@ public class CitaController {
     	List<CitaResponseDTO> listado = citaService.listarPendientesPorPaciente(filtro);
         return listado.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listado);
     }
+    
+    @GetMapping("/confirmadas/buscar")
+    public ResponseEntity<List<CitaResponseDTO>> listarConfirmadasPaciente(@RequestParam String filtro) {
+    	List<CitaResponseDTO> listado = citaService.listarConfirmadasPorPaciente(filtro);
+        return listado.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listado);
+    }
 	
 	@PostMapping
     public ResponseEntity<CitaResponseDTO> registrar(

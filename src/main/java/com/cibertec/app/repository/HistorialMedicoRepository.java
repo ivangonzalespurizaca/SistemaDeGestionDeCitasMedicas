@@ -18,4 +18,6 @@ public interface HistorialMedicoRepository extends JpaRepository<HistorialMedico
 	           "OR UPPER(p.apellidos) LIKE UPPER(CONCAT('%', :criterio, '%')))" +
 	           "ORDER BY c.fecha DESC, c.hora DESC")
 	    List<HistorialMedico> buscarPorPacienteOOrderByFechaDesc(@Param("criterio") String criterio);
+	
+	List<HistorialMedico> findAllByOrderByCita_FechaDescCita_HoraDesc();
 }

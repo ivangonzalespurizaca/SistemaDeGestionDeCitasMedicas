@@ -68,7 +68,7 @@ public class ComprobanteDePagoServiceImpl implements ComprobanteDePagoService{
 	@Transactional(readOnly = true)
 	@Override
 	public List<ComprobanteDePagoResponseDTO> listarTodos() {
-		return comprobanteRepository.findAll().stream()
+		return comprobanteRepository.findAllByOrderByFechaEmisionDesc().stream()
                 .map(comprobanteMapper::toComprobantePagoResponseDTO)
                 .toList();
 	}

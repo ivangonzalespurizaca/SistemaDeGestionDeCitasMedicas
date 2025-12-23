@@ -16,4 +16,5 @@ public class AgendaMedicoDTO {
     Long idCita; 
     String pacienteNombreCompleto;
     String motivo;
+    String estadoCita;
 }

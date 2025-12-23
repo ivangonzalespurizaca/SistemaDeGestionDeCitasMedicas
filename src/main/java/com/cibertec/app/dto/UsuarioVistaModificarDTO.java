@@ -15,5 +15,6 @@ public class UsuarioVistaModificarDTO {
     private String dni;
     private String telefono;
     private String correo;
-    
+    private String imgPerfil;
+    private String estado;
 }

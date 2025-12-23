@@ -75,7 +75,8 @@ VALUES
 (5, 3, 'Lucía', 'Ramírez Paredes', '71589423', '956478213', 95.00, 'TARJETA'),
 (6, 3, 'Carlos', 'Torres Huamán', '73214589', '945612378', 110.00, 'TRANSFERENCIA'),
 (8, 3, 'Lucía', 'Ramírez Paredes', '71589423', '956478213', 100.00, 'TARJETA'),
-(9, 3, 'Carlos', 'Torres Huamán', '73214589', '945612378', 115.00, 'TRANSFERENCIA');
+(9, 3, 'Carlos', 'Torres Huamán', '73214589', '945612378', 115.00, 'TRANSFERENCIA'),
+(2, 3, 'Carlos', 'Torres Huamán', '73214589', '945612378', 115.00, 'TRANSFERENCIA');
 
 INSERT INTO Historial_Medico (ID_Cita, ID_Usuario, Diagnostico, Tratamiento, Notas_Adicionales, Peso, Presion_Arterial)
 VALUES
@@ -96,3 +97,21 @@ VALUES
 ('medi4', '$2a$10$pehyH/xsPAjfSYDgzqvX5uZMKEHtT/z6Ikslr7x9Ej3UUZnq5gr3G', 'Rodrigo Gustavo', 'Rosales Palma', '77874547', '999985421', 'MEDICO'),
 ('medi5', '$2a$10$pehyH/xsPAjfSYDgzqvX5uZMKEHtT/z6Ikslr7x9Ej3UUZnq5gr3G', 'Carolina Fernanda', 'Talledo Salas', '73323215', '963252352', 'MEDICO'),
 ('medi6', '$2a$10$pehyH/xsPAjfSYDgzqvX5uZMKEHtT/z6Ikslr7x9Ej3UUZnq5gr3G', 'Vanessa Esperanza', 'Cardenas Palomino', '71114524', '952365236', 'MEDICO');
+
+SELECT * FROM Slot_Horario;
+
+SELECT * FROM Slot_Horario where ID_Medico = 1;
+
+SELECT * FROM Cita;
+
+SELECT * FROM Paciente;
+
+SELECT * FROM comprobante_pago;
+
+SELECT * FROM usuario;
+
+SELECT * FROM medico;
+
+SELECT * FROM historial_medico;
+
+SELECT * FROM log_cita;

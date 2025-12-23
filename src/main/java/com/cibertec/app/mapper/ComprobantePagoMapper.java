@@ -30,6 +30,7 @@ public interface ComprobantePagoMapper {
     @Mapping(target = "nombresPagador", source = "pagador.nombresPagador")
     @Mapping(target = "apellidosPagador", source = "pagador.apellidosPagador")
     @Mapping(target = "dniPagador", source = "pagador.dniPagador")
+	@Mapping(target = "estadoCita", source = "cita.estado")
     ComprobanteDePagoResponseDTO toComprobantePagoResponseDTO(ComprobanteDePago compro);
 	
     @Mapping(target = "nombresPagador", source = "pagador.nombresPagador")

@@ -17,6 +17,8 @@ public class CitaDetalleDTO {
     private String pacienteDni;
     private String pacienteNombreCompleto;
 
+    private Long idMedico;
+    private String medicoDni;
     private String medicoNombreCompleto;
     private String especialidadNombre;
     

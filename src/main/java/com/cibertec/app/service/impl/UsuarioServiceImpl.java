@@ -1,11 +1,18 @@
 package com.cibertec.app.service.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cibertec.app.dto.UsuarioActualizacionDTO;
 import com.cibertec.app.dto.UsuarioRegistroDTO;
@@ -30,7 +37,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 	
 	@Transactional
 	@Override
-	public UsuarioResponseDTO registrarUsuario(UsuarioRegistroDTO dto) {
+	public UsuarioResponseDTO registrarUsuario(UsuarioRegistroDTO dto, MultipartFile archivo) {
 		
 		if (usuarioRepository.existsByUsername(dto.getUsername())) {
             throw new IllegalArgumentException("El nombre de usuario ya está registrado.");
@@ -44,6 +51,15 @@ public class UsuarioServiceImpl implements UsuarioService{
 		String hash = passwordEncoder.encode(dto.getContrasenia());
 		entity.setContrasenia(hash);
 		
+		if (archivo != null && !archivo.isEmpty()) {
+	        try {
+	            String nombreArchivo = guardarArchivoLocal(archivo);
+	            entity.setImgPerfil(nombreArchivo); 
+	        } catch (IOException e) {
+	            throw new RuntimeException("Error al guardar la imagen de perfil: " + e.getMessage());
+	        }
+	    }
+		
 		Usuario guardado = usuarioRepository.save(entity);
 		
 		return usuarioMapper.toUsuarioResponseDTO(guardado);
@@ -52,7 +68,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 	
 	@Transactional
 	@Override
-	public UsuarioResponseDTO actualizarUsuario(UsuarioActualizacionDTO dto) {
+	public UsuarioResponseDTO actualizarUsuario(UsuarioActualizacionDTO dto, MultipartFile archivo) {
 		
 		Usuario entity = usuarioRepository.findById(dto.getIdUsuario())
                 .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
@@ -70,11 +86,30 @@ public class UsuarioServiceImpl implements UsuarioService{
 		
 		usuarioMapper.toUsuarioUpdate(dto, entity);
 		
-		String nuevaContrasenia = dto.getContrasenia();
+		String nuevaClave = dto.getContrasenia();
 		
-        if (nuevaContrasenia != null && !nuevaContrasenia.isEmpty()) {
-            entity.setContrasenia(passwordEncoder.encode(nuevaContrasenia));
-        }
+		if (nuevaClave != null && !nuevaClave.trim().isEmpty()) {
+	        if (nuevaClave.length() < 4) {
+	            throw new IllegalArgumentException("La nueva clave debe tener al menos 4 caracteres.");
+	        }
+	        entity.setContrasenia(passwordEncoder.encode(nuevaClave));
+	    }
+		
+		if (archivo != null && !archivo.isEmpty()) {
+	        try {
+	            // Opcional: Eliminar la foto anterior físicamente si existe
+	            if (entity.getImgPerfil() != null) {
+	                Path rutaAnterior = Paths.get("uploads/perfiles/").resolve(entity.getImgPerfil());
+	                Files.deleteIfExists(rutaAnterior);
+	            }
+
+	            // Guardar la nueva imagen
+	            String nombreArchivo = guardarArchivoLocal(archivo);
+	            entity.setImgPerfil(nombreArchivo); 
+	        } catch (IOException e) {
+	            throw new RuntimeException("Error al actualizar la imagen de perfil: " + e.getMessage());
+	        }
+	    }
         
         Usuario actualizado = usuarioRepository.save(entity);
         
@@ -130,5 +165,32 @@ public class UsuarioServiceImpl implements UsuarioService{
 	    }
 	    
 	    usuarioRepository.save(entity);
+	}
+	
+	private String guardarArchivoLocal(MultipartFile archivo) throws IOException {
+	    String carpetaDestino = "uploads/perfiles/";
+	    Path pathDestino = Paths.get(carpetaDestino);
+	    
+	    if (!Files.exists(pathDestino)) {
+	        Files.createDirectories(pathDestino);
+	    }
+
+	    // 1. Extraer la extensión del archivo original (ej: .png, .jpg)
+	    String nombreOriginal = archivo.getOriginalFilename();
+	    String extension = "";
+	    if (nombreOriginal != null && nombreOriginal.contains(".")) {
+	        extension = nombreOriginal.substring(nombreOriginal.lastIndexOf("."));
+	    }
+
+	    // 2. Generar nombre puramente único sin espacios ni caracteres raros
+	    // Esto evita nombres como "UUID_Captura de pantalla.png" que rompen la URL
+	    String nombreUnico = UUID.randomUUID().toString() + extension.toLowerCase();
+	    
+	    Path rutaCompleta = pathDestino.resolve(nombreUnico);
+
+	    // 3. Copiar el archivo
+	    Files.copy(archivo.getInputStream(), rutaCompleta, StandardCopyOption.REPLACE_EXISTING);
+
+	    return nombreUnico; 
 	}
 }

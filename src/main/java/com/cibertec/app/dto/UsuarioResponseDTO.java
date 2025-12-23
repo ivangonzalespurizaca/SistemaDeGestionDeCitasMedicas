@@ -13,5 +13,5 @@ public class UsuarioResponseDTO {
     private String nombres;
     private String apellidos;
     private TipoRol rol;
-    
+    private String imgPerfil;
 }
