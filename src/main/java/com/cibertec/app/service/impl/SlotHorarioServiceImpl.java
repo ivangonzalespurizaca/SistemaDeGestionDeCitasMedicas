@@ -50,7 +50,21 @@ public class SlotHorarioServiceImpl implements SlotHorarioService{
 	@Override
 	public List<AgendaMedicoDTO> obtenerAgendaMedicoPorFecha(Long idMedico, LocalDate fecha) {
 		
+		// 1. Log de entrada para verificar parámetros
+	    System.out.println("DEBUG: Iniciando consulta de agenda...");
+	    System.out.println("DEBUG: idMedico recibido: " + idMedico);
+	    System.out.println("DEBUG: fecha recibida: " + fecha);
+		
 		List<SlotHorario> slots = slotHorarioRepository.obtenerVistaRecepcionCompleta(idMedico, fecha);
+		
+		// 3. Log de salida de la DB
+	    if (slots == null || slots.isEmpty()) {
+	        System.out.println("DEBUG: La consulta al repositorio regresó CERO resultados.");
+	    } else {
+	        System.out.println("DEBUG: Se encontraron " + slots.size() + " registros en la base de datos.");
+	        // Imprimir el primer registro para ver si los datos internos vienen nulos
+	        System.out.println("DEBUG: Primer Slot ID: " + slots.get(0).getIdSlot());
+	    }
 		
         return slots.stream()
                 .map(slotHorarioMapper::toAgendaMedicoDTO)

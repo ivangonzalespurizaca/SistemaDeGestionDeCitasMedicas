@@ -1,6 +1,5 @@
 -- ==========================================================
 -- SCRIPT DE CONSOLIDACIÓN Y EXPANSIÓN - CLÍNICA SANTA ROSA
--- FECHA DE CARGA: 28 DE DICIEMBRE, 2025 (06:50 AM)
 -- ==========================================================
 
 USE DB_Hospital;
@@ -44,45 +43,59 @@ INSERT INTO Paciente (Nombres, Apellidos, DNI, Fecha_nacimiento, Telefono) VALUE
 ('Carmen', 'Salcedo Diaz', '79876543', '1987-12-05', '920345678'),
 ('Fernando', 'Suarez Gil', '78765432', '1991-09-17', '930456789');
 
--- 5. HORARIOS Y SLOTS (Configuración para Domingo 28 y futuros)
+-- 5. HORARIOS Y SLOTS (Configurados para evitar el día de hoy)
 INSERT INTO Horarios_Atencion (Id_Medico, Dia_Semana, Horario_Entrada, Horario_Salida) VALUES
-(1, 'DOMINGO', '09:00:00', '13:00:00'), (2, 'DOMINGO', '08:00:00', '12:00:00'),
-(3, 'DOMINGO', '14:00:00', '18:00:00'), (4, 'DOMINGO', '08:00:00', '12:00:00'),
-(5, 'DOMINGO', '09:00:00', '13:00:00'), (6, 'DOMINGO', '14:00:00', '18:00:00');
+-- Médico 1 (Pedro Sanchez)
+(1, 'LUNES', '08:00:00', '18:00:00'), 
+(1, 'MARTES', '08:00:00', '13:00:00'),
+-- Médico 2 (Anthony Rojas)
+(2, 'LUNES', '08:00:00', '16:00:00'),
+(2, 'MIERCOLES', '08:00:00', '12:00:00'),
+-- Médico 3 (Sofia Diaz)
+(3, 'LUNES', '14:00:00', '20:00:00'),
+(3, 'MIERCOLES', '09:00:00', '13:00:00'),
+-- Médico 4 (Rodrigo Rosales)
+(4, 'LUNES', '08:00:00', '18:00:00'),
+-- Médico 5 (Carolina Talledo)
+(5, 'MARTES', '09:00:00', '13:00:00'),
+-- Médico 6 (Vanessa Cardenas)
+(6, 'DOMINGO', '14:00:00', '18:00:00');
 
 CALL GenerarSlots();
 
--- 6. CITAS (Lógica temporal corregida al 28/12/2025 06:50 AM)
+-- 6. CITAS (Lógica temporal corregida - SIN FECHAS PARA HOY 20/02/2026)
 INSERT INTO Cita (ID_Cita, ID_Medico, ID_Paciente, ID_Usuario, Fecha, Hora, Motivo, Estado) VALUES
--- Pasadas (Ya atendidas)
-(1, 1, 1, 2, '2025-12-18', '09:00:00', 'Control inicial', 'ATENDIDO'),
-(2, 2, 3, 2, '2025-12-18', '08:00:00', 'Dolor de columna', 'ATENDIDO'),
-(3, 1, 1, 2, '2025-12-22', '09:00:00', 'Consulta general', 'ATENDIDO'),
-(11, 1, 4, 2, '2025-12-27', '09:00:00', 'Control presión', 'ATENDIDO'),
-(12, 2, 7, 2, '2025-12-27', '11:00:00', 'Crecimiento y desarrollo', 'ATENDIDO'),
--- Hoy Domingo 28/12 (Próximas, por lo tanto NO atendidas aún)
-(22, 1, 8, 2, '2025-12-28', '10:00:00', 'Control post-operatorio', 'CONFIRMADO'),
-(23, 2, 9, 2, '2025-12-28', '09:00:00', 'Chequeo pediátrico', 'CONFIRMADO'),
-(24, 3, 10, 2, '2025-12-28', '15:00:00', 'Consulta ginecológica', 'CONFIRMADO'),
-(25, 4, 11, 2, '2025-12-28', '11:00:00', 'Evaluación cardiaca', 'CONFIRMADO'),
-(26, 5, 12, 2, '2025-12-28', '12:00:00', 'Limpieza dental', 'CONFIRMADO'),
-(27, 1, 13, 2, '2025-12-28', '12:00:00', 'Revisión de síntomas', 'PENDIENTE'),
-(28, 2, 14, 2, '2025-12-28', '08:00:00', 'Vacunación refuerzo', 'PENDIENTE'),
-(29, 3, 15, 2, '2025-12-28', '17:00:00', 'Control de rutina', 'PENDIENTE');
+-- Pasadas (Ya atendidas en Enero y principios de Febrero)
+(1, 1, 1, 2, '2026-01-12', '09:00:00', 'Control inicial', 'ATENDIDO'),
+(2, 2, 3, 2, '2026-01-19', '08:00:00', 'Dolor de columna', 'ATENDIDO'),
+(3, 1, 1, 2, '2026-01-26', '09:00:00', 'Consulta general', 'ATENDIDO'),
+(11, 1, 4, 2, '2026-02-02', '09:00:00', 'Control presión', 'ATENDIDO'),
+(12, 2, 7, 2, '2026-02-09', '11:00:00', 'Crecimiento y desarrollo', 'ATENDIDO'),
+(13, 3, 5, 2, '2026-02-16', '15:00:00', 'Consulta de rutina', 'ATENDIDO'),
 
--- 7. COMPROBANTES DE PAGO (Solo para citas ATENDIDAS o CONFIRMADAS)
-INSERT INTO Comprobante_Pago (ID_Cita, ID_Usuario, Nombres_Pagador, Apellidos_Pagador, DNI_Pagador, Contacto_Pagador, Email_Pagador,Monto, Metodo_Pago) VALUES
+-- FUTURAS (A partir de la próxima semana)
+(22, 1, 8, 2, '2026-02-23', '14:00:00', 'Control post-operatorio', 'CONFIRMADO'),
+(23, 2, 9, 2, '2026-02-23', '15:00:00', 'Chequeo pediátrico', 'CONFIRMADO'),
+(24, 3, 10, 2, '2026-02-23', '16:00:00', 'Consulta ginecológica', 'CONFIRMADO'),
+(25, 4, 11, 2, '2026-02-23', '17:00:00', 'Evaluación cardiaca', 'CONFIRMADO'),
+
+(26, 5, 12, 2, '2026-02-24', '09:00:00', 'Limpieza dental', 'CONFIRMADO'),
+(27, 1, 13, 2, '2026-02-24', '10:00:00', 'Revisión de síntomas', 'PENDIENTE'),
+
+(28, 2, 14, 2, '2026-02-25', '08:00:00', 'Vacunación refuerzo', 'PENDIENTE'),
+(29, 3, 15, 2, '2026-02-25', '11:00:00', 'Control de rutina', 'PENDIENTE');
+
+-- 7. COMPROBANTES DE PAGO
+INSERT INTO Comprobante_Pago (ID_Cita, ID_Usuario, Nombres_Pagador, Apellidos_Pagador, DNI_Pagador, Contacto_Pagador, Email_Pagador, Monto, Metodo_Pago) VALUES
 (1, 3, 'Javier', 'Mendoza Castillo', '74851236', '987321654', 'javier.mendoza@gmail.com', 80.00, 'EFECTIVO'),
 (2, 3, 'Carlos', 'Torres Huamán', '73214589', '945612378', 'c.torres@outlook.com', 80.00, 'EFECTIVO'),
 (3, 3, 'Javier', 'Mendoza Castillo', '74851236', '987321654', 'javier.mendoza@gmail.com', 80.00, 'EFECTIVO'),
 (11, 3, 'Ana', 'Riva Agüero', '76543210', '912345678', 'ana.riva@yahoo.com', 100.00, 'EFECTIVO'),
 (12, 3, 'Miguel', 'Soto Mayor', '70123456', '945678901', 'msotomayor@empresa.com', 90.00, 'TRANSFERENCIA'),
 
--- Pagos realizados hoy para citas de hoy
+-- Pagos para citas futuras (Oscar Ivan Gonzales Purizaca)
 (22, 3, 'Jorge', 'Guerra Tello', '72109876', '989012345', 'jorge.guerra@gmail.com', 100.00, 'EFECTIVO'),
 (23, 3, 'Isabel', 'Cruzado Ruiz', '71098765', '990123456', 'isabel.cruzado@hotmail.com', 90.00, 'TARJETA'),
-(24, 3, 'Carlos', 'Torres Huamán', '73214589', '945612378', 'c.torres@outlook.com', 120.00, 'TRANSFERENCIA'),
-(25, 3, 'Ricardo', 'Palma Ferrand', '70987654', '910234567', 'r.palma@literatura.pe', 150.00, 'TARJETA'),
 (26, 3, 'Oscar Ivan', 'Gonzales Purizaca', '79876543', '920345678', 'gonzalespurizacaoscarivan@gmail.com', 85.00, 'EFECTIVO');
 
 -- 8. HISTORIAL MÉDICO (Solo para citas pasadas con estado ATENDIDO)
@@ -99,3 +112,21 @@ UPDATE Slot_Horario s
 INNER JOIN Cita c ON s.ID_Medico = c.ID_Medico AND s.Fecha = c.Fecha AND s.Hora_Inicio = c.Hora
 SET s.Estado = 'RESERVADO', s.ID_Cita = c.ID_Cita;
 SET SQL_SAFE_UPDATES = 1;
+
+-- Consulta de verificación para el Lunes 23/02/2026 (Primer día de citas futuras)
+SELECT 
+    s.id_slot, 
+    s.fecha, 
+    s.hora_inicio, 
+    s.estado AS estado_slot,
+    c.id_cita, 
+    c.motivo, 
+    c.estado AS estado_cita,
+    p.nombres AS paciente_nombre, 
+    p.apellidos AS paciente_apellido
+FROM slot_horario s
+LEFT JOIN cita c ON s.id_cita = c.id_cita
+LEFT JOIN paciente p ON c.id_paciente = p.id_paciente
+WHERE s.id_medico = 1 
+  AND s.fecha = '2026-02-23'
+ORDER BY s.hora_inicio;
